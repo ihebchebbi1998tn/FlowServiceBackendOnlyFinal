@@ -1,0 +1,51 @@
+services:
+  - type: web
+    name: consolidated-api
+    runtime: docker
+    plan: free
+    region: oregon
+    repo: https://github.com/ihebchebbi1998tn/lmobilebackendpfe.git
+    rootDir: .
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DATABASE_URL
+        value: postgresql://neondb_owner:npg_CAiFLbX85sIq@ep-summer-fire-adwac3xi-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+      - key: JWT_SECRET
+        value: 98f7h1F9C8WzQl2kxHa7Xt5Tz0Yv93Lm
+      - key: JWT_ISSUER
+        value: ConsolidatedApi
+      - key: JWT_AUDIENCE
+        value: ConsolidatedApi
+      - key: JWT_ACCESS_TOKEN_EXPIRATION_MINUTES
+        value: 60
+      - key: JWT_REFRESH_TOKEN_EXPIRATION_DAYS
+        value: 7
+      - key: JWT_REFRESH_SECRET
+        value: 98f7h1F9C8WzQl2kxHa7Xt5Tz0Yv93Lm
+      - key: STRIPE_SECRET_KEY
+        value: your_stripe_secret_key_here
+      - key: FRONTEND_URL
+        value: https://8dd5c1af-9726-4c1e-93bc-fc4dc0b53ee3.lovableproject.com
+      - key: ADMIN_EMAIL
+        value: elfadanes@gmail.com
+      - key: ADMIN_PASSWORD
+        value: SuperSecret123!
+      - key: ADMIN_FIRSTNAME
+        value: L-Mobile
+      - key: ADMIN_LASTNAME
+        value: Admin
+      - key: MINIO_ENDPOINT
+        value: files.example.com
+      - key: MINIO_ACCESS_KEY
+        value: minioadmin
+      - key: MINIO_SECRET_KEY
+        value: minioadmin
+      - key: API_TOKEN_GEMINI
+        value: AIzaSyCiV8CSl_tDHZTv3c0lZXvmWia068p0GRQ
+      - key: API_TOKEN_APYHUB
+        value: APY0LohLftAzHPlX5CNriQErLATRVmXS6wJVVb7vtWfZPnbtUU9laUquEvNQ4JBLn4qh2buC4CJ
+      - key: ACCESS_TOKEN_SQUARE
+        value: EAAAl0VqrxqWUbKs69-8Ok6DlR-xHlBW2iy6nW_ANYnKt6gWbpulx7vkcqmHfcon
+      - key: RESET_TOKEN_EXPIRATION_HOURS
+        value: 1
+    healthCheckPath: /health
