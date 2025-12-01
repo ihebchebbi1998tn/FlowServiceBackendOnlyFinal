@@ -15,7 +15,7 @@ namespace MyApi.Migrations
             // CONTACTS MODULE
             // =====================================================
             migrationBuilder.CreateTable(
-                name: "contacts",
+                name: "Contacts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -39,7 +39,7 @@ namespace MyApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_contacts", x => x.Id);
+                    table.PrimaryKey("PK_Contacts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -74,9 +74,9 @@ namespace MyApi.Migrations
                 {
                     table.PrimaryKey("PK_ContactNotes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ContactNotes_contacts_ContactId",
+                        name: "FK_ContactNotes_Contacts_ContactId",
                         column: x => x.ContactId,
-                        principalTable: "contacts",
+                        principalTable: "Contacts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -96,9 +96,9 @@ namespace MyApi.Migrations
                 {
                     table.PrimaryKey("PK_ContactTagAssignments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ContactTagAssignments_contacts_ContactId",
+                        name: "FK_ContactTagAssignments_Contacts_ContactId",
                         column: x => x.ContactId,
-                        principalTable: "contacts",
+                        principalTable: "Contacts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -273,7 +273,7 @@ namespace MyApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "currencies",
+                name: "Currencies",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
@@ -291,7 +291,7 @@ namespace MyApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_currencies", x => x.Id);
+                    table.PrimaryKey("PK_Currencies", x => x.Id);
                 });
 
             // =====================================================
@@ -327,9 +327,9 @@ namespace MyApi.Migrations
                 {
                     table.PrimaryKey("PK_projects", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_projects_contacts_ContactId",
+                        name: "FK_projects_Contacts_ContactId",
                         column: x => x.ContactId,
-                        principalTable: "contacts",
+                        principalTable: "Contacts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                 });
@@ -405,9 +405,9 @@ namespace MyApi.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_projecttasks_contacts_ContactId",
+                        name: "FK_projecttasks_Contacts_ContactId",
                         column: x => x.ContactId,
-                        principalTable: "contacts",
+                        principalTable: "Contacts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(

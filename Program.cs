@@ -258,44 +258,56 @@ using (var scope = app.Services.CreateScope())
             var expectedTables = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "__EFMigrationsHistory",
+                // Auth & Users Module (PascalCase)
                 "MainAdminUsers",
                 "Users",
                 "UserPreferences",
+                // Roles & Skills Module (PascalCase)
                 "Roles",
                 "UserRoles",
                 "Skills",
                 "UserSkills",
                 "RoleSkills",
-                "contacts",
+                // Contacts Module (PascalCase)
+                "Contacts",
                 "ContactTags",
                 "ContactTagAssignments",
                 "ContactNotes",
+                // Articles Module (snake_case)
                 "articles",
                 "article_categories",
                 "locations",
                 "inventory_transactions",
+                // Calendar Module (snake_case)
                 "calendar_events",
                 "event_attendees",
                 "event_reminders",
                 "event_types",
+                // Lookups Module (PascalCase)
                 "LookupItems",
-                "currencies",
+                "Currencies",
+                // Offers Module (snake_case)
                 "offers",
                 "offer_items",
                 "offer_activities",
+                // Sales Module (snake_case)
                 "sales",
                 "sale_items",
                 "sale_activities",
+                // Installations Module (snake_case)
                 "installations",
                 "maintenance_histories",
+                // Service Orders Module (snake_case)
                 "service_orders",
                 "service_order_jobs",
+                // Projects Module (lowercase)
                 "projects",
                 "projectcolumns",
                 "projecttasks",
                 "taskcomments",
                 "taskattachments",
                 "dailytasks",
+                // Dispatches Module (snake_case)
                 "dispatches",
                 "dispatch_technicians",
                 "dispatch_time_entries",
@@ -303,6 +315,7 @@ using (var scope = app.Services.CreateScope())
                 "dispatch_materials",
                 "dispatch_attachments",
                 "dispatch_notes",
+                // Planning Module (snake_case)
                 "technician_working_hours",
                 "technician_leaves",
                 "technician_status_history",
