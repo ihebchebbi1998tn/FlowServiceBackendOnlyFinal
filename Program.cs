@@ -254,59 +254,69 @@ using (var scope = app.Services.CreateScope())
         {
             migrationLogger.LogInformation("📋 Validating database tables...");
 
-            // Define expected tables based on actual EF Core table names
             var expectedTables = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "__EFMigrationsHistory",
+                // Auth & users
                 "MainAdminUsers",
-                "users",
+                "Users",
                 "UserPreferences",
-                "roles",
+                // Roles & skills
+                "Roles",
                 "UserRoles",
-                "skills",
+                "Skills",
                 "UserSkills",
                 "RoleSkills",
-                "contacts",
+                // Contacts
+                "Contacts",
                 "ContactTags",
                 "ContactTagAssignments",
                 "ContactNotes",
-                "articles",
-                "article_categories",
-                "locations",
-                "inventory_transactions",
-                "calendar_events",
-                "event_attendees",
-                "event_reminders",
-                "event_types",
+                // Articles & inventory
+                "Articles",
+                "ArticleCategories",
+                "Locations",
+                "InventoryTransactions",
+                // Calendar
+                "CalendarEvents",
+                "EventAttendees",
+                "EventReminders",
+                "EventTypes",
+                // Lookups & core
                 "LookupItems",
-                "currencies",
-                "offers",
-                "offer_items",
-                "offer_activities",
-                "sales",
-                "sale_items",
-                "sale_activities",
-                "installations",
-                "maintenance_histories",
-                "service_orders",
-                "service_order_jobs",
-                "projects",
-                "projectcolumns",
-                "projecttasks",
-                "taskcomments",
-                "taskattachments",
-                "dailytasks",
-                "dispatches",
-                "dispatch_technicians",
-                "dispatch_time_entries",
-                "dispatch_expenses",
-                "dispatch_materials",
-                "dispatch_attachments",
-                "dispatch_notes",
-                "technician_working_hours",
-                "technician_leaves",
-                "technician_status_history",
-                "dispatch_history"
+                "Currencies",
+                // Offers & sales
+                "Offers",
+                "OfferItems",
+                "OfferActivities",
+                "Sales",
+                "SaleItems",
+                "SaleActivities",
+                // Installations & service orders
+                "Installations",
+                "MaintenanceHistory",
+                "ServiceOrders",
+                "ServiceOrderJobs",
+                // Projects & tasks
+                "Projects",
+                "ProjectColumns",
+                "ProjectTasks",
+                "TaskComments",
+                "TaskAttachments",
+                "DailyTasks",
+                // Dispatches
+                "Dispatches",
+                "DispatchTechnicians",
+                "TimeEntries",
+                "Expenses",
+                "MaterialUsage",
+                "Attachments",
+                "Notes",
+                // Planning
+                "TechnicianWorkingHours",
+                "TechnicianLeave",
+                "TechnicianStatusHistory",
+                "DispatchHistory"
             };
 
             var existingTables = context.Database.SqlQueryRaw<string>(
