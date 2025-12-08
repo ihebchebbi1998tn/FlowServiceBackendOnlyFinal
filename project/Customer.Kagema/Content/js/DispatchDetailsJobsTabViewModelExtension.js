@@ -1,12 +1,9 @@
 (function () {
 	var baseViewModel = window.Crm.Service.ViewModels.DispatchDetailsJobsTabViewModel;
-	var baseConstructor = baseViewModel;
 
 	window.Crm.Service.ViewModels.DispatchDetailsJobsTabViewModel = function (parentViewModel) {
-		// Call the base ServiceOrderDetailsJobsTabViewModel first with extended expansions
-		window.Main.ViewModels.ViewModelBase.apply(this, arguments);
 		var viewModel = this;
-		viewModel.lookups = parentViewModel.lookups;
+		viewModel.lookups = parentViewModel.lookups || {};
 		viewModel.lookups.serviceCaseStatuses = viewModel.lookups.serviceCaseStatuses ||
 			{ $tableName: "CrmService_ServiceCaseStatus" };
 		viewModel.lookups.serviceOrderTimeStatuses = viewModel.lookups.serviceOrderTimeStatuses ||
@@ -14,7 +11,7 @@
 		viewModel.lookups.currencies = viewModel.lookups.currencies || { $tableName: "Main_Currency" };
 		viewModel.serviceOrder = parentViewModel.serviceOrder;
 		
-		// Include Installation.Address for Standort (location) display
+		// Include Installation and Installation.Address for Standort display
 		window.Main.ViewModels.GenericListViewModel.call(viewModel, "CrmService_ServiceOrderTime", ["PosNo"], ["ASC"], ["Installation", "Installation.Address", "Article"]);
 		viewModel.infiniteScroll(true);
 		viewModel.accumulatedTotalPrice = window.ko.pureComputed(function () {

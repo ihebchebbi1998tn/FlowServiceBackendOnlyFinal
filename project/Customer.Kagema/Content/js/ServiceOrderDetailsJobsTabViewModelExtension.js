@@ -2,9 +2,8 @@
 	var baseViewModel = window.Crm.Service.ViewModels.ServiceOrderDetailsJobsTabViewModel;
 
 	window.Crm.Service.ViewModels.ServiceOrderDetailsJobsTabViewModel = function (parentViewModel) {
-		window.Main.ViewModels.ViewModelBase.apply(this, arguments);
 		var viewModel = this;
-		viewModel.lookups = parentViewModel.lookups;
+		viewModel.lookups = parentViewModel.lookups || {};
 		viewModel.lookups.serviceCaseStatuses = viewModel.lookups.serviceCaseStatuses ||
 			{ $tableName: "CrmService_ServiceCaseStatus" };
 		viewModel.lookups.serviceOrderTimeStatuses = viewModel.lookups.serviceOrderTimeStatuses ||
@@ -15,7 +14,7 @@
 			return parentViewModel.serviceOrderIsEditable() &&
 				window.Crm.Service.Settings.ServiceContract.MaintenanceOrderGenerationMode === "JobPerInstallation";
 		});
-		// Include Installation.Address for Standort display
+		// Include Installation and Installation.Address for Standort display
 		window.Main.ViewModels.GenericListViewModel.call(viewModel, "CrmService_ServiceOrderTime", ["PosNo"], ["ASC"], ["Installation", "Installation.Address", "Article"]);
 		viewModel.infiniteScroll(true);
 		viewModel.accumulatedTotalPrice = window.ko.pureComputed(function () {

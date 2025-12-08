@@ -18,14 +18,21 @@
 					@(Html.Localize("Installation")):
 					<span data-bind="text: InstallationNo"></span>
 					<span data-bind="text: Description"></span>
-				<!-- Geräteakte Standort -->
+					<!-- Geräteakte Standort -->
 					<!-- ko if: $data.Address -->
 					<div class="m-t-5">
-						<strong>Geräteakte Standort:</strong>
+						<strong>Standort:</strong>
 						<span data-bind="text: Address.Street"></span>,
 						<span data-bind="text: Address.ZipCode"></span>
 						<span data-bind="text: Address.City"></span>
 					</div>
+					<!-- /ko -->
+					<!-- ko ifnot: $data.Address -->
+					<!-- ko if: $data.LocationAddressKey -->
+					<div class="m-t-5 text-muted">
+						<small>(Standort nicht geladen - AddressKey: <span data-bind="text: LocationAddressKey"></span>)</small>
+					</div>
+					<!-- /ko -->
 					<!-- /ko -->
 				</div>
 			</div>
