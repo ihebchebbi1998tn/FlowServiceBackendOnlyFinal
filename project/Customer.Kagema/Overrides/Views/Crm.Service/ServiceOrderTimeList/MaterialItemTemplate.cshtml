@@ -19,10 +19,10 @@
 					<span data-bind="text: InstallationNo"></span>
 					<span data-bind="text: Description"></span>
 				<!-- Geräteakte Standort (KagemaStandort from ExtensionValues) -->
-					<!-- ko if: ExtensionValues && ExtensionValues().KagemaStandort -->
+					<!-- ko if: ExtensionValues && (typeof ExtensionValues === 'function' ? ExtensionValues() : ExtensionValues).KagemaStandort -->
 					<div class="m-t-5">
 						<strong>Standort:</strong>
-						<span data-bind="text: ExtensionValues().KagemaStandort"></span>
+						<span data-bind="text: (typeof ExtensionValues === 'function' ? ExtensionValues() : ExtensionValues).KagemaStandort"></span>
 					</div>
 					<!-- /ko -->
 				</div>
