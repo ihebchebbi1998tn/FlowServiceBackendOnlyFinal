@@ -9,6 +9,7 @@ module.exports = function() {
 		"Content/js/ServiceOrderDetailsMaterialsTabViewModelExtension.js",
 		"Content/js/ServiceOrderDetailsViewModelExtension.js",
 		"Content/js/ServiceOrderDetailsJobsTabViewModelExtension.js",
+		"Content/js/DispatchDetailsJobsTabViewModelExtension.js",
 		"Content/js/DispatchAdHocViewModelExtension.js",
 		"Content/js/DispatchDetailsViewModelExtension.js",
 		"Content/js/ServiceOrderMaterialReportPlannedModalViewModel.js",		
