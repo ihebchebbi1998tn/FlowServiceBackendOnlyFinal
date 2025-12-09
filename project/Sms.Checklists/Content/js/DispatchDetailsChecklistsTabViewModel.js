@@ -75,6 +75,15 @@ namespace("Crm.Service.ViewModels").DispatchDetailsChecklistsTabViewModel.protot
 	}
 	return window.Main.ViewModels.GenericListViewModel.prototype.applyFilter.apply(this, arguments);
 };
+namespace("Crm.Service.ViewModels").DispatchDetailsChecklistsTabViewModel.prototype.applyOrderBy = function (query) {
+	var viewModel = this;
+	var id = null;
+	if (viewModel.dispatch() && viewModel.dispatch().CurrentServiceOrderTimeId()) {
+		id = viewModel.dispatch().CurrentServiceOrderTimeId();
+	}
+	query = query.orderByDescending("orderByCurrentServiceOrderTime", { currentServiceOrderTimeId: id });
+	return window.Main.ViewModels.GenericListViewModel.prototype.applyOrderBy.call(viewModel, query);
+};
 namespace("Crm.Service.ViewModels").DispatchDetailsChecklistsTabViewModel.prototype.applyFilters = function (query) {
 	var viewModel = this;
 	query = window.Main.ViewModels.GenericListViewModel.prototype.applyFilters.call(viewModel, query);
