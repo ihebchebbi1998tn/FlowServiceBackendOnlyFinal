@@ -23,7 +23,7 @@
 		
 		// Handle both promise and non-promise returns
 		if (result && typeof result.then === 'function') {
-			return result.then(function () {
+			return result.then(function (baseResult) {
 				// Re-sort AFTER base completes to put current job's checklists first
 				if (currentServiceOrderTimeId && viewModel.items && viewModel.items()) {
 					var sortedItems = viewModel.items().slice().sort(function (a, b) {
@@ -36,6 +36,7 @@
 					});
 					viewModel.items(sortedItems);
 				}
+				return baseResult; // Return the original result to maintain the chain
 			});
 		} else {
 			// Synchronous case - sort immediately after base
