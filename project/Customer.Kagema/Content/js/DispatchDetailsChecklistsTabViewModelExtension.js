@@ -9,15 +9,14 @@
 
 	// Add sortedChecklistItems as a function that returns sorted items
 	// This works whether called before or after init
-	basePrototype.sortedChecklistItems = function () {
-		var viewModel = this;
+	// Helper function to get sorted items (current job first)
+	function getSortedItems(viewModel) {
 		var allItems = viewModel.items ? viewModel.items() : [];
 		
 		if (!allItems || allItems.length === 0) {
 			return [];
 		}
 		
-		// Get current ServiceOrderTime ID from dispatch
 		var currentServiceOrderTimeId = null;
 		if (viewModel.dispatch && viewModel.dispatch() && viewModel.dispatch().CurrentServiceOrderTimeId) {
 			currentServiceOrderTimeId = viewModel.dispatch().CurrentServiceOrderTimeId();
@@ -27,7 +26,6 @@
 			return allItems;
 		}
 		
-		// Sort: current job's checklists first, then maintain original order
 		return allItems.slice().sort(function (a, b) {
 			var aIsCurrentJob = a.ServiceOrderTimeKey && a.ServiceOrderTimeKey() === currentServiceOrderTimeId;
 			var bIsCurrentJob = b.ServiceOrderTimeKey && b.ServiceOrderTimeKey() === currentServiceOrderTimeId;
@@ -35,6 +33,22 @@
 			if (aIsCurrentJob && !bIsCurrentJob) return -1;
 			if (!aIsCurrentJob && bIsCurrentJob) return 1;
 			return 0;
+		});
+	}
+
+	// Non-PDF checklists sorted
+	basePrototype.sortedChecklistItems = function () {
+		var viewModel = this;
+		return getSortedItems(viewModel).filter(function (item) {
+			return !viewModel.isPdf(item);
+		});
+	};
+
+	// PDF checklists sorted
+	basePrototype.sortedPdfChecklistItems = function () {
+		var viewModel = this;
+		return getSortedItems(viewModel).filter(function (item) {
+			return viewModel.isPdf(item);
 		});
 	};
 
