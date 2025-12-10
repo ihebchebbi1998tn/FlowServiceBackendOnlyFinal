@@ -13,8 +13,6 @@
 	function getSortedItems(viewModel) {
 		var allItems = viewModel.items ? viewModel.items() : [];
 		
-		console.log("Kagema Checklist Debug - Total items count:", allItems.length);
-		
 		if (!allItems || allItems.length === 0) {
 			return [];
 		}
@@ -24,21 +22,28 @@
 			currentServiceOrderTimeId = viewModel.dispatch().CurrentServiceOrderTimeId();
 		}
 		
-		console.log("Kagema Checklist Debug - CurrentServiceOrderTimeId:", currentServiceOrderTimeId);
-		console.log("Kagema Checklist Debug - Item ServiceOrderTimeKeys:", allItems.map(function(item) {
-			return item.ServiceOrderTimeKey ? item.ServiceOrderTimeKey() : 'null';
-		}));
-		
 		if (!currentServiceOrderTimeId) {
 			return allItems;
 		}
 		
+		// Sort: current job first, then group by ServiceOrderTimeKey
 		return allItems.slice().sort(function (a, b) {
-			var aIsCurrentJob = a.ServiceOrderTimeKey && a.ServiceOrderTimeKey() === currentServiceOrderTimeId;
-			var bIsCurrentJob = b.ServiceOrderTimeKey && b.ServiceOrderTimeKey() === currentServiceOrderTimeId;
+			var aKey = a.ServiceOrderTimeKey ? a.ServiceOrderTimeKey() : null;
+			var bKey = b.ServiceOrderTimeKey ? b.ServiceOrderTimeKey() : null;
+			var aIsCurrentJob = aKey === currentServiceOrderTimeId;
+			var bIsCurrentJob = bKey === currentServiceOrderTimeId;
 			
+			// Current job items come first
 			if (aIsCurrentJob && !bIsCurrentJob) return -1;
 			if (!aIsCurrentJob && bIsCurrentJob) return 1;
+			
+			// Within same priority, group by ServiceOrderTimeKey
+			if (aKey !== bKey) {
+				if (aKey === null) return 1;
+				if (bKey === null) return -1;
+				return aKey < bKey ? -1 : 1;
+			}
+			
 			return 0;
 		});
 	}
