@@ -13,6 +13,8 @@
 	function getSortedItems(viewModel) {
 		var allItems = viewModel.items ? viewModel.items() : [];
 		
+		console.log("Kagema Checklist Debug - Total items count:", allItems.length);
+		
 		if (!allItems || allItems.length === 0) {
 			return [];
 		}
@@ -21,6 +23,11 @@
 		if (viewModel.dispatch && viewModel.dispatch() && viewModel.dispatch().CurrentServiceOrderTimeId) {
 			currentServiceOrderTimeId = viewModel.dispatch().CurrentServiceOrderTimeId();
 		}
+		
+		console.log("Kagema Checklist Debug - CurrentServiceOrderTimeId:", currentServiceOrderTimeId);
+		console.log("Kagema Checklist Debug - Item ServiceOrderTimeKeys:", allItems.map(function(item) {
+			return item.ServiceOrderTimeKey ? item.ServiceOrderTimeKey() : 'null';
+		}));
 		
 		if (!currentServiceOrderTimeId) {
 			return allItems;
