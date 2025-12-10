@@ -28,7 +28,9 @@
 			<!-- /ko -->
 			<!-- Kagema override: Sort checklists to show current job's checklists first -->
 			<div data-bind="foreach: $data.sortedChecklistItems()">
+				<!-- ko if: $data._isFirstInGroup -->
 				@await Html.PartialAsync("GenericListItemGroup")
+				<!-- /ko -->
 				@await Html.PartialAsync("../ServiceOrderChecklistList/MaterialItemTemplate")
 			</div>
 
@@ -36,7 +38,9 @@
 			<div>
 				<h4 data-bind="visible: pdfChecklistCounter(items()) >0" class="m-l-15">@(Html.Localize("PDF-Checklists"))</h4>
 				<div data-bind="foreach: $data.sortedPdfChecklistItems()">
+					<!-- ko if: $data._isFirstInGroup -->
 					@await Html.PartialAsync("GenericListItemGroup")
+					<!-- /ko -->
 					@await Html.PartialAsync("../ServiceOrderChecklistList/MaterialItemPdfTemplate")
 				</div>
 			</div>

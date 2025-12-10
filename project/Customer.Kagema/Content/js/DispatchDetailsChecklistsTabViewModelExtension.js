@@ -36,20 +36,40 @@
 		});
 	}
 
-	// Non-PDF checklists sorted
+	// Non-PDF checklists sorted with group tracking
 	basePrototype.sortedChecklistItems = function () {
 		var viewModel = this;
-		return getSortedItems(viewModel).filter(function (item) {
+		var items = getSortedItems(viewModel).filter(function (item) {
 			return !viewModel.isPdf(item);
 		});
+		
+		// Mark first item of each group
+		var lastServiceOrderTimeKey = null;
+		items.forEach(function (item) {
+			var currentKey = item.ServiceOrderTimeKey ? item.ServiceOrderTimeKey() : null;
+			item._isFirstInGroup = (currentKey !== lastServiceOrderTimeKey);
+			lastServiceOrderTimeKey = currentKey;
+		});
+		
+		return items;
 	};
 
-	// PDF checklists sorted
+	// PDF checklists sorted with group tracking
 	basePrototype.sortedPdfChecklistItems = function () {
 		var viewModel = this;
-		return getSortedItems(viewModel).filter(function (item) {
+		var items = getSortedItems(viewModel).filter(function (item) {
 			return viewModel.isPdf(item);
 		});
+		
+		// Mark first item of each group
+		var lastServiceOrderTimeKey = null;
+		items.forEach(function (item) {
+			var currentKey = item.ServiceOrderTimeKey ? item.ServiceOrderTimeKey() : null;
+			item._isFirstInGroup = (currentKey !== lastServiceOrderTimeKey);
+			lastServiceOrderTimeKey = currentKey;
+		});
+		
+		return items;
 	};
 
 	console.log("DispatchDetailsChecklistsTabViewModelExtension loaded successfully");
