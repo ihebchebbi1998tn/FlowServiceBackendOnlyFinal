@@ -6,53 +6,44 @@
 	}
 
 	var basePrototype = window.Crm.Service.ViewModels.DispatchDetailsChecklistsTabViewModel.prototype;
-	var baseInitItems = basePrototype.initItems;
 
-	// Override initItems to prioritize checklists for the currently selected job at the top
-	basePrototype.initItems = function (items) {
+	// Add computed observable for sorted checklist items (current job first)
+	var baseInit = basePrototype.init;
+	basePrototype.init = function () {
 		var viewModel = this;
 		
-		// Get the current ServiceOrderTime ID from the dispatch
-		var currentServiceOrderTimeId = null;
-		if (viewModel.dispatch && viewModel.dispatch() && viewModel.dispatch().CurrentServiceOrderTimeId) {
-			currentServiceOrderTimeId = viewModel.dispatch().CurrentServiceOrderTimeId();
-		}
-
-		// Call base initItems first (returns a promise)
-		var result = baseInitItems.apply(viewModel, arguments);
+		// Call base init first
+		var result = baseInit.apply(viewModel, arguments);
 		
-		// Handle both promise and non-promise returns
-		if (result && typeof result.then === 'function') {
-			return result.then(function (baseResult) {
-				// Re-sort AFTER base completes to put current job's checklists first
-				if (currentServiceOrderTimeId && viewModel.items && viewModel.items()) {
-					var sortedItems = viewModel.items().slice().sort(function (a, b) {
-						var aIsCurrentJob = a.ServiceOrderTimeKey && a.ServiceOrderTimeKey() === currentServiceOrderTimeId;
-						var bIsCurrentJob = b.ServiceOrderTimeKey && b.ServiceOrderTimeKey() === currentServiceOrderTimeId;
-						
-						if (aIsCurrentJob && !bIsCurrentJob) return -1;
-						if (!aIsCurrentJob && bIsCurrentJob) return 1;
-						return 0; // Keep existing order within groups
-					});
-					viewModel.items(sortedItems);
-				}
-				return baseResult; // Return the original result to maintain the chain
-			});
-		} else {
-			// Synchronous case - sort immediately after base
-			if (currentServiceOrderTimeId && viewModel.items && viewModel.items()) {
-				var sortedItems = viewModel.items().slice().sort(function (a, b) {
-					var aIsCurrentJob = a.ServiceOrderTimeKey && a.ServiceOrderTimeKey() === currentServiceOrderTimeId;
-					var bIsCurrentJob = b.ServiceOrderTimeKey && b.ServiceOrderTimeKey() === currentServiceOrderTimeId;
-					
-					if (aIsCurrentJob && !bIsCurrentJob) return -1;
-					if (!aIsCurrentJob && bIsCurrentJob) return 1;
-					return 0; // Keep existing order within groups
-				});
-				viewModel.items(sortedItems);
+		// Create computed observable that sorts items with current job first
+		viewModel.sortedChecklistItems = ko.computed(function () {
+			var allItems = viewModel.items ? viewModel.items() : [];
+			if (!allItems || allItems.length === 0) {
+				return [];
 			}
-			return result;
-		}
+			
+			// Get current ServiceOrderTime ID from dispatch
+			var currentServiceOrderTimeId = null;
+			if (viewModel.dispatch && viewModel.dispatch() && viewModel.dispatch().CurrentServiceOrderTimeId) {
+				currentServiceOrderTimeId = viewModel.dispatch().CurrentServiceOrderTimeId();
+			}
+			
+			if (!currentServiceOrderTimeId) {
+				return allItems;
+			}
+			
+			// Sort: current job's checklists first, then maintain original order
+			return allItems.slice().sort(function (a, b) {
+				var aIsCurrentJob = a.ServiceOrderTimeKey && a.ServiceOrderTimeKey() === currentServiceOrderTimeId;
+				var bIsCurrentJob = b.ServiceOrderTimeKey && b.ServiceOrderTimeKey() === currentServiceOrderTimeId;
+				
+				if (aIsCurrentJob && !bIsCurrentJob) return -1;
+				if (!aIsCurrentJob && bIsCurrentJob) return 1;
+				return 0; // Keep existing order within groups
+			});
+		});
+		
+		return result;
 	};
 
 	console.log("DispatchDetailsChecklistsTabViewModelExtension loaded successfully");

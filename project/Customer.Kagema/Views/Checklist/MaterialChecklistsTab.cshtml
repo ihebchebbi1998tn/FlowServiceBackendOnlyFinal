@@ -1,0 +1,65 @@
+@inherits Crm.Library.Modularization.CrmViewUserControl
+@using Crm.Library.Globalization.Extensions
+@using Crm.Library.Modularization.Extensions
+
+<div role="tabpanel" class="tab-pane animated fadeIn" id="tab-checklists" data-bind="with: tabs()['tab-checklists']">
+	<ul class="top-menu">
+		@Html.PluginRenderActions("DispatchChecklistsTabTopMenu")
+		<li data-bind="visible: true, tooltip: true" data-placement="bottom" title="@(Html.Localize("Filter"))">
+			<a id="open-generic-list-filter" data-trigger="#right-nav" href="#" data-route="@("Sms.Checklists/ServiceOrderChecklistList/FilterTemplate")">
+				<i class="tm-icon zmdi zmdi-search-in-page"></i>
+			</a>
+		</li>
+	</ul>
+	<empty-state-box params="mood: 'happy', title: 'Checklists', text: 'NoServiceOrderChecklistsAdded'" data-bind="visible: items().length === 0 && !isFiltered() && !currentJobItemGroup()">
+	</empty-state-box>
+	@Html.PluginRenderActions("MaterialGenericListResourceExtensions")
+	<div class="generic-list listview lv-bordered">
+		<div class="lv-body">
+			<h4 data-bind="visible: checklistCounter(items()) >0" class="m-l-15">@(Html.Localize("Checklists"))</h4>
+			<!-- ko with: currentJobItemGroup -->
+			<div class="lv-header" data-bind="css: $data.css">
+				<span data-bind="text: $data.title"></span>
+				<p class="small" data-bind="text: $data.subtitle, visible: $data.subtitle"></p>
+			</div>
+			<div class="lv-item media">
+				<span data-bind="translatedText: 'NoServiceOrderChecklistsAdded'"></span>
+			</div>
+			<!-- /ko -->
+			<!-- Kagema override: Sort checklists to show current job's checklists first -->
+			<div data-bind="foreach: sortedChecklistItems">
+				<!-- ko if: $parent.isPdf($data) === false -->
+				@await Html.PartialAsync("GenericListItemGroup")
+				@await Html.PartialAsync("../ServiceOrderChecklistList/MaterialItemTemplate")
+				<!-- /ko -->
+			</div>
+
+			<!-- ko requiredPermission: { name: 'Read', group: 'PdfFeature' } -->
+			<div>
+				<h4 data-bind="visible: pdfChecklistCounter(items()) >0" class="m-l-15">@(Html.Localize("PDF-Checklists"))</h4>
+				<div data-bind="foreach: filteredByPdfChecklist(sortedChecklistItems())">
+					@await Html.PartialAsync("GenericListItemGroup")
+					@await Html.PartialAsync("../ServiceOrderChecklistList/MaterialItemPdfTemplate")
+				</div>
+			</div>
+			<!-- /ko -->
+
+
+
+
+			<!-- ko if: items().length === 0 && isFiltered() -->
+			<div id="generic-list-empty-state" class="lv-item media">
+				<div class="row media-body">
+					<div class="col-xs-12">
+						<small class="lv-small">@(Html.Localize("NoRecordsForSearchCriteria"))</small>
+					</div>
+				</div>
+			</div>
+			<!-- /ko -->
+		</div>
+	</div>
+	 @await Html.PartialAsync("Material/GenericListPreloader") 
+	<floating-action-button>
+		@Html.PluginRenderActions("DispatchChecklistsTabPrimaryAction")
+	</floating-action-button>
+</div>
