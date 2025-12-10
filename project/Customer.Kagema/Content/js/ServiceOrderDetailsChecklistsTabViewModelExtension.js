@@ -7,30 +7,23 @@
 
 	var basePrototype = window.Crm.Service.ViewModels.ServiceOrderDetailsChecklistsTabViewModel.prototype;
 
-	// Override applyOrderBy to prioritize checklists for the currently selected job
-	basePrototype.applyOrderBy = function (query) {
+	// Note: ServiceOrderDetailsChecklistsTabViewModel inherits from DispatchDetailsChecklistsTabViewModel
+	// The initItems override in DispatchDetailsChecklistsTabViewModelExtension will apply here too
+	// But we need to ensure the dispatch reference is accessible for ServiceOrder context
+
+	// Store original init if we need to enhance it
+	var baseInit = basePrototype.init;
+
+	basePrototype.init = function () {
 		var viewModel = this;
-		var currentServiceOrderTimeId = null;
-
-		// Get the current ServiceOrderTime ID from the parent's dispatch or service order context
-		if (viewModel.parentViewModel && viewModel.parentViewModel.dispatch && viewModel.parentViewModel.dispatch()) {
-			var dispatch = viewModel.parentViewModel.dispatch();
-			if (dispatch.CurrentServiceOrderTimeId) {
-				currentServiceOrderTimeId = dispatch.CurrentServiceOrderTimeId();
-			}
+		
+		// Ensure dispatch is accessible (inherited from parent through DispatchDetailsChecklistsTabViewModel)
+		// The parentViewModel should have dispatch if we're in a dispatch context
+		if (!viewModel.dispatch && viewModel.parentViewModel && viewModel.parentViewModel.dispatch) {
+			viewModel.dispatch = viewModel.parentViewModel.dispatch;
 		}
 
-		// Apply ordering to prioritize current job's checklists at the top
-		if (currentServiceOrderTimeId) {
-			query = query.orderByDescending("orderByCurrentServiceOrderTime", { currentServiceOrderTimeId: currentServiceOrderTimeId });
-		}
-
-		// Call the parent's applyOrderBy if it exists
-		if (window.Crm.Service.ViewModels.DispatchDetailsChecklistsTabViewModel.prototype.applyOrderBy) {
-			return window.Crm.Service.ViewModels.DispatchDetailsChecklistsTabViewModel.prototype.applyOrderBy.call(viewModel, query);
-		}
-
-		return window.Main.ViewModels.GenericListViewModel.prototype.applyOrderBy.call(viewModel, query);
+		return baseInit.apply(viewModel, arguments);
 	};
 
 	console.log("ServiceOrderDetailsChecklistsTabViewModelExtension loaded successfully");

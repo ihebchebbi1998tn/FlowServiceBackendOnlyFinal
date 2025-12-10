@@ -6,26 +6,34 @@
 	}
 
 	var basePrototype = window.Crm.Service.ViewModels.DispatchDetailsChecklistsTabViewModel.prototype;
+	var baseInitItems = basePrototype.initItems;
 
-	// Add applyOrderBy to prioritize checklists for the currently selected job
-	basePrototype.applyOrderBy = function (query) {
+	// Override initItems to prioritize checklists for the currently selected job at the top
+	basePrototype.initItems = function (items) {
 		var viewModel = this;
 		var currentServiceOrderTimeId = null;
 
 		// Get the current ServiceOrderTime ID from the dispatch
-		if (viewModel.dispatch && viewModel.dispatch()) {
-			var dispatch = viewModel.dispatch();
-			if (dispatch.CurrentServiceOrderTimeId) {
-				currentServiceOrderTimeId = dispatch.CurrentServiceOrderTimeId();
-			}
+		if (viewModel.dispatch && viewModel.dispatch() && viewModel.dispatch().CurrentServiceOrderTimeId) {
+			currentServiceOrderTimeId = viewModel.dispatch().CurrentServiceOrderTimeId();
 		}
 
-		// Apply ordering to prioritize current job's checklists at the top
+		// Call the base initItems first (this does the standard sorting)
+		var result = baseInitItems.apply(viewModel, arguments);
+
+		// Then re-sort to put current job's checklists at the top
 		if (currentServiceOrderTimeId) {
-			query = query.orderByDescending("orderByCurrentServiceOrderTime", { currentServiceOrderTimeId: currentServiceOrderTimeId });
+			viewModel.items.sort(function (a, b) {
+				var aIsCurrentJob = a.ServiceOrderTimeKey && a.ServiceOrderTimeKey() === currentServiceOrderTimeId;
+				var bIsCurrentJob = b.ServiceOrderTimeKey && b.ServiceOrderTimeKey() === currentServiceOrderTimeId;
+				
+				if (aIsCurrentJob && !bIsCurrentJob) return -1;
+				if (!aIsCurrentJob && bIsCurrentJob) return 1;
+				return 0; // Keep existing order within groups
+			});
 		}
 
-		return window.Main.ViewModels.GenericListViewModel.prototype.applyOrderBy.call(viewModel, query);
+		return result;
 	};
 
 	console.log("DispatchDetailsChecklistsTabViewModelExtension loaded successfully");
